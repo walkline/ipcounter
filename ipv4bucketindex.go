@@ -17,7 +17,7 @@ const (
 
 type zeroBytesType struct{}
 
-// IPv4BucketIndex implements index for v4 ips, uses buckets of empty maps
+// IPv4BucketIndex implements index for v4 ips, uses buckets of maps
 type IPv4BucketIndex struct {
 	// buckets used to reduce number of thread locks.
 	//
@@ -46,6 +46,8 @@ func (i *IPv4BucketIndex) Add(ip string) error {
 
 	i.bucketsLock[k].Lock()
 
+	// built-in maps hash function is faster
+	// then converting ip to integer
 	i.buckets[k][ip] = zeroBytesType{}
 
 	// better to not use defer here
